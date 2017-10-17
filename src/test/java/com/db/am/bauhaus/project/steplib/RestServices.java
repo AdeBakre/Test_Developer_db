@@ -38,8 +38,8 @@ public class RestServices extends ScenarioSteps {
     ResponseBodyExtractionOptions getResponse(String endpoint) {
 
 
-        //return getRequest(endpoint).when().get().then().statusCode(HttpStatus.SC_OK).extract().body();
-        return getRequest(endpoint).when().get().then().statusCode(HttpStatus.SC_BAD_REQUEST).extract().response();
+        //This fails as i'm unable to connect to the service using my api key - Ade
+        return getRequest(endpoint).when().get().then().statusCode(HttpStatus.SC_OK).extract().response();
 
 
     }
