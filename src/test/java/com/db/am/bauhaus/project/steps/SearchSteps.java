@@ -4,6 +4,7 @@ import com.db.am.bauhaus.project.SearchFor;
 import com.db.am.bauhaus.project.SearchTarget;
 import com.db.am.bauhaus.project.SessionVar;
 import com.db.am.bauhaus.project.pages.MainSearchPage;
+import com.db.am.bauhaus.project.pages.ResultPage;
 import com.db.am.bauhaus.project.steplib.SearchUser;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
@@ -33,8 +34,8 @@ public class SearchSteps {
 
     @Steps
     SearchUser user;
-
     MainSearchPage mainSearchPage;
+    ResultPage resultPage;
 
     @Given("^John is viewing the Etsy landing page$")
     public void goto_landing_page() {
@@ -44,6 +45,8 @@ public class SearchSteps {
     @Given("^([^\\s]+) is viewing the Etsy landing page \\(screenplay\\)$")
     public void goto_landing_page_screenplay(String theUser) {
         theActorCalled(theUser).attemptsTo(Open.browserOn().the(mainSearchPage));
+
+
     }
 
     @When("^he searches for a product from the input box$")
@@ -58,8 +61,11 @@ public class SearchSteps {
 
     @Then("^the result should be displayed$")
     public void verify_search_result() {
-        user.verify_result_for_top_categories();
+
+        //user.verify_result_for_top_categories();
         user.verify_result_for_all_categories();
+        //mainSearchPage.navigate_to_category_sub_page();
+
     }
 
     @Then("^the result should be displayed \\(screenplay\\)$")
@@ -70,4 +76,59 @@ public class SearchSteps {
                 seeThat("the all categories header ", the(SearchTarget.ALL_CATEGORIES_HEADER), containsText(searchText))
         );
     }
+
+    @When("^he clicks on the \"([^\"]*)\" with \"([^\"]*)\"$")
+    public void he_clicks_on_the_on_the_page(String menu, String subMenu) throws Throwable {
+
+        mainSearchPage.navigate_to_category_sub_page(menu, subMenu);
+
+    }
+
+    @When("^he clicks on \"([^\"]*)\"$")
+    public void he_clicks_on(String icon_name) throws Throwable {
+        mainSearchPage.select_by_icon(icon_name);
+    }
+
+
+    @Then("^he should be on the \"([^\"]*)\" page$")
+    public void he_should_be_on_the_page(String pageHeader) throws Throwable {
+
+        resultPage.verifyHeaderOnPage(pageHeader);
+
+
+    }
+
+    @Then("^he should be on the page for menu$")
+    public void he_should_be_on_the_page_for_menu() throws Throwable {
+
+        user.verify_result_for_top_categories();
+
+    }
+
+    /*
+    API Section
+     */
+
+    @Given("^John requested a search for all top categories$")
+    public void john_requested_a_search_for_all_top_categories() throws Throwable {
+        user.get_all_top_categories();
+    }
+
+    @Then("^the service should return results for top categories$")
+    public void the_service_should_return_results_for_top_categories() throws Throwable {
+        user.verifyCategoriesListNotEmpty();
+    }
+
+    @Given("^John searched for categories by \"([^\"]*)\" with \"([^\"]*)\"$")
+    public void john_searched_for_categories_by_with(String item, String keyword) throws Throwable {
+        user.get_category_by_name(item,keyword);
+    }
+
+    @Then("^the result should contain categories with \"([^\"]*)\"$")
+    public void the_result_should_contain_categories_with(String keyword) throws Throwable {
+        user.verify_match_exists(keyword);
+    }
+
+
+
 }
